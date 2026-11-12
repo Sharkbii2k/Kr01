@@ -1,0 +1,1328 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>K-TOPIK SRS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+KR:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+      background-color: #131F24;
+      color: #FFFFFF;
+      overflow: hidden;
+      height: 100dvh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kr-font {
+      font-family: 'Noto Sans KR', 'Nunito', sans-serif;
+    }
+    /* Duolingo 3D Tactile Buttons */
+    .btn-3d-green {
+      background-color: #58CC02;
+      border-bottom: 5px solid #46A302;
+      color: #FFFFFF;
+      transition: transform 0.08s, border-bottom-width 0.08s;
+    }
+    .btn-3d-green:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-blue {
+      background-color: #1CB0F6;
+      border-bottom: 5px solid #1899D6;
+      color: #FFFFFF;
+      transition: transform 0.08s, border-bottom-width 0.08s;
+    }
+    .btn-3d-blue:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-orange {
+      background-color: #FF9600;
+      border-bottom: 5px solid #CC7800;
+      color: #FFFFFF;
+      transition: transform 0.08s, border-bottom-width 0.08s;
+    }
+    .btn-3d-orange:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-red {
+      background-color: #FF4B4B;
+      border-bottom: 5px solid #EA2B2B;
+      color: #FFFFFF;
+      transition: transform 0.08s, border-bottom-width 0.08s;
+    }
+    .btn-3d-red:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-purple {
+      background-color: #CE82FF;
+      border-bottom: 5px solid #A559D9;
+      color: #FFFFFF;
+      transition: transform 0.08s, border-bottom-width 0.08s;
+    }
+    .btn-3d-purple:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-card {
+      background-color: #202F36;
+      border: 2px solid #37464F;
+      border-bottom: 5px solid #37464F;
+      color: #FFFFFF;
+      transition: all 0.08s;
+    }
+    .btn-3d-card:hover {
+      background-color: #283B44;
+    }
+    .btn-3d-card:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+    .btn-3d-card.selected-correct {
+      background-color: #1F3822;
+      border-color: #58CC02;
+      color: #58CC02;
+    }
+    .btn-3d-card.selected-wrong {
+      background-color: #3A1D22;
+      border-color: #FF4B4B;
+      color: #FF4B4B;
+    }
+    /* Custom thin scrollbar for compact containers */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #131F24;
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #37464F;
+      border-radius: 8px;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popIn 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MAIN COMPACT APPLICATION SHELL -->
+  <div class="w-full max-w-2xl h-[96dvh] max-h-[820px] bg-[#131F24] sm:border-2 sm:border-[#37464F] sm:rounded-3xl flex flex-col justify-between p-3 sm:p-5 overflow-hidden relative shadow-2xl">
+
+    <!-- TOP SEGMENTED HEADER & AUDIO CONTROLS -->
+    <header id="topNavHeader" class="flex items-center justify-between gap-2 pb-3 border-b-2 border-[#202F36] shrink-0">
+      <div class="flex items-center bg-[#202F36] p-1 rounded-2xl border-2 border-[#37464F] flex-1">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 px-2 rounded-xl font-black text-xs sm:text-sm tracking-wide transition-all bg-[#58CC02] text-white shadow">
+          MENU CHÍNH
+        </button>
+        <button onclick="switchTab('levels')" id="tab-levels" class="flex-1 py-2 px-2 rounded-xl font-black text-xs sm:text-sm tracking-wide transition-all text-[#AFAFAF] hover:text-white">
+          CẤP ĐỘ
+        </button>
+        <button onclick="switchTab('lessons')" id="tab-lessons" class="flex-1 py-2 px-2 rounded-xl font-black text-xs sm:text-sm tracking-wide transition-all text-[#AFAFAF] hover:text-white">
+          BÀI HỌC
+        </button>
+      </div>
+
+      <!-- Sound Toggle -->
+      <button onclick="toggleSound()" id="soundToggleBtn" class="btn-3d-card px-3 py-2 rounded-2xl font-black text-sm flex items-center gap-1 shrink-0">
+        <span id="soundIcon">🔊</span>
+      </button>
+    </header>
+
+    <!-- VIEWPORT CONTAINER -->
+    <main class="flex-1 overflow-hidden relative my-2 flex flex-col">
+
+      <!-- ==================== TAB 1: MENU CHÍNH ==================== -->
+      <section id="view-dashboard" class="h-full flex flex-col justify-between gap-2.5 overflow-y-auto custom-scroll pr-0.5">
+        
+        <!-- Real-time Clock & Start Action Row -->
+        <div class="bg-[#202F36] border-2 border-[#37464F] rounded-2xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-center sm:text-left">
+            <div id="liveDate" class="text-xs font-extrabold text-[#1CB0F6] uppercase tracking-widest">THỨ NĂM, 12/11/2026</div>
+            <div id="liveClock" class="text-4xl sm:text-5xl font-black tracking-tight text-white leading-none mt-1">00:00:00</div>
+          </div>
+          <button onclick="handleQuickStart()" class="w-full sm:w-auto btn-3d-green px-7 py-3.5 rounded-2xl font-black text-lg sm:text-xl tracking-wider flex items-center justify-center gap-2 uppercase shadow-lg">
+            <span>▶ START</span>
+          </button>
+        </div>
+
+        <!-- Streak & Weekly Activity Board -->
+        <div class="bg-[#202F36] border-2 border-[#37464F] rounded-2xl p-3.5 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="text-3xl">🔥</span>
+              <div>
+                <div class="text-xl font-black text-[#FF9600] leading-tight"><span id="streakCount">1</span> NGÀY LIÊN TIẾP</div>
+                <div class="text-xs font-bold text-[#AFAFAF]">Đã hoàn thành: <span id="totalDoneCount" class="text-white">0</span> bài</div>
+              </div>
+            </div>
+            <div class="bg-[#131F24] border border-[#37464F] px-3 py-1.5 rounded-xl text-right">
+              <div class="text-[10px] font-extrabold text-[#AFAFAF] uppercase">Cấp hiện tại</div>
+              <div id="activeLevelBadge" class="text-sm font-black text-[#58CC02]">TOPIK 1</div>
+            </div>
+          </div>
+          <!-- 7-Day Row -->
+          <div id="weekDaysRow" class="grid grid-cols-7 gap-1.5 pt-1"></div>
+        </div>
+
+        <!-- SRS Board (1 New + 1, 3, 7, 15, 30 Days Ago) -->
+        <div class="bg-[#202F36] border-2 border-[#37464F] rounded-2xl p-3.5 flex-1 flex flex-col justify-between min-h-[250px]">
+          <div class="flex items-center justify-between border-b border-[#37464F] pb-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🧠</span>
+              <span class="font-black text-sm sm:text-base tracking-wide uppercase text-white">BẢNG SRS HÔM NAY</span>
+            </div>
+            <!-- Day Progression Stepper (Allows jumping to Day 31 immediately or progressing day by day) -->
+            <div class="flex items-center gap-1 bg-[#131F24] p-1 rounded-xl border border-[#37464F]">
+              <button onclick="changeSrsDay(-1)" class="px-2 py-0.5 rounded-lg bg-[#202F36] hover:bg-[#37464F] font-black text-xs text-white">-</button>
+              <span class="px-2 text-xs font-black text-[#1CB0F6]">BÀI NGÀY <span id="currentSrsDayLabel">1</span></span>
+              <button onclick="changeSrsDay(1)" class="px-2 py-0.5 rounded-lg bg-[#202F36] hover:bg-[#37464F] font-black text-xs text-white">+</button>
+              <button onclick="setSrsDay31()" class="ml-1 px-2 py-0.5 rounded-lg bg-[#FF9600] text-[#131F24] font-black text-[11px]" title="Test mốc Bài 31 (Đủ 5 bài ôn + 1 bài mới)">MỐC 31</button>
+            </div>
+          </div>
+
+          <!-- 6 SRS Slots Grid -->
+          <div id="srsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 my-auto">
+            <!-- Dynamically rendered 6 slots: Mới, -1, -3, -7, -15, -30 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 2: MENU CẤP ĐỘ ==================== -->
+      <section id="view-levels" class="hidden h-full flex flex-col justify-between gap-2 overflow-y-auto custom-scroll">
+        <div id="levelsGrid" class="grid grid-cols-2 gap-2.5 my-auto h-full">
+          <!-- Populated dynamically with TOPIK 1 to TOPIK 6 -->
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: DANH SÁCH BÀI HỌC ==================== -->
+      <section id="view-lessons" class="hidden h-full flex flex-col gap-2.5 overflow-hidden">
+        <!-- Level Selector Subheader -->
+        <div class="flex items-center justify-between bg-[#202F36] border-2 border-[#37464F] rounded-2xl px-3.5 py-2.5 shrink-0">
+          <div>
+            <span id="lessonListLevelTitle" class="text-base sm:text-lg font-black text-[#58CC02]">TOPIK 1 - SƠ CẤP 1</span>
+            <p id="lessonListSubtitle" class="text-xs font-bold text-[#AFAFAF]">50 Bài học • Phương pháp i+1 & Ngữ pháp ngầm</p>
+          </div>
+          <select id="quickLevelSelect" onchange="selectLevel(parseInt(this.value))" class="bg-[#131F24] border-2 border-[#37464F] rounded-xl px-2.5 py-1.5 font-black text-xs text-white outline-none">
+            <option value="1">TOPIK 1</option>
+            <option value="2">TOPIK 2</option>
+            <option value="3">TOPIK 3</option>
+            <option value="4">TOPIK 4</option>
+            <option value="5">TOPIK 5</option>
+            <option value="6">TOPIK 6</option>
+          </select>
+        </div>
+
+        <!-- Scrollable Compact Lesson List -->
+        <div id="lessonsContainer" class="flex-1 overflow-y-auto custom-scroll space-y-2 pr-1">
+          <!-- Lesson cards rendered here -->
+        </div>
+      </section>
+
+      <!-- ==================== QUIZ ENGINE VIEW (3 STAGES) ==================== -->
+      <section id="view-quiz" class="hidden h-full flex flex-col justify-between gap-3">
+        <!-- Top Quiz Progress Header -->
+        <div class="flex items-center gap-3 shrink-0">
+          <button onclick="exitQuiz()" class="btn-3d-card px-3 py-1.5 rounded-xl font-black text-sm text-[#AFAFAF] hover:text-white">✕</button>
+          <div class="flex-1 bg-[#202F36] h-4 rounded-full overflow-hidden border border-[#37464F] p-0.5">
+            <div id="quizProgressBar" class="bg-[#58CC02] h-full rounded-full transition-all duration-300" style="width: 5%"></div>
+          </div>
+          <span id="quizStageBadge" class="bg-[#1CB0F6] text-[#131F24] px-2.5 py-1 rounded-xl font-black text-xs tracking-wide shrink-0">PHẦN 1/3</span>
+        </div>
+
+        <!-- Stage Instruction Label -->
+        <div class="flex items-center justify-between px-1 shrink-0">
+          <span id="quizInstruction" class="text-xs sm:text-sm font-black uppercase tracking-wider text-[#AFAFAF]">CHỌN NGHĨA TIẾNG VIỆT</span>
+          <span id="quizCounter" class="text-xs font-black text-[#58CC02]">1 / 15</span>
+        </div>
+
+        <!-- Main Prompt Display Card -->
+        <div class="bg-[#202F36] border-2 border-[#37464F] rounded-3xl p-4 sm:p-6 flex-1 flex flex-col items-center justify-center text-center relative min-h-[160px]">
+          <button onclick="replayCurrentPromptAudio()" class="btn-3d-blue w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3 shadow-md" title="Nghe phát âm tiếng Hàn">
+            🔊
+          </button>
+          <div id="quizMainKorean" class="kr-font text-3xl sm:text-4xl font-black text-white tracking-wide leading-snug break-words max-w-full">
+            안녕하세요
+          </div>
+          <div id="quizPhonetic" class="text-sm sm:text-base font-extrabold text-[#1CB0F6] mt-1.5 tracking-wide">
+            [annyeonghaseyo]
+          </div>
+          <div id="quizSubHint" class="text-xs sm:text-sm font-bold text-[#AFAFAF] mt-2 hidden"></div>
+        </div>
+
+        <!-- 4 Options Grid -->
+        <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 shrink-0">
+          <!-- 4 Tactile Choice Buttons -->
+        </div>
+
+        <!-- Feedback / Next Action Bar -->
+        <div id="quizFeedbackBar" class="h-14 flex items-center justify-between px-4 rounded-2xl bg-[#202F36] border-2 border-[#37464F] shrink-0">
+          <div id="quizFeedbackText" class="font-black text-sm sm:text-base text-[#AFAFAF]">Chọn đáp án đúng</div>
+          <button id="quizNextBtn" onclick="nextQuizQuestion()" class="hidden btn-3d-green px-6 py-2 rounded-xl font-black text-sm uppercase tracking-wider">
+            TIẾP TỤC ➜
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== VICTORY / COMPLETION VIEW ==================== -->
+      <section id="view-victory" class="hidden h-full flex flex-col items-center justify-center text-center p-4 gap-4 animate-pop">
+        <div class="text-6xl">🏆</div>
+        <h2 class="text-3xl font-black text-[#58CC02] uppercase tracking-wide">HOÀN THÀNH XUẤT SẮC!</h2>
+        <p id="victoryLessonTitle" class="text-base font-extrabold text-white"></p>
+        <div class="grid grid-cols-3 gap-3 w-full max-w-md my-2">
+          <div class="bg-[#202F36] border-2 border-[#58CC02] rounded-2xl p-3">
+            <div class="text-xs font-extrabold text-[#AFAFAF]">TỪ VỰNG</div>
+            <div id="statVocabCount" class="text-2xl font-black text-[#58CC02] mt-1">15</div>
+          </div>
+          <div class="bg-[#202F36] border-2 border-[#1CB0F6] rounded-2xl p-3">
+            <div class="text-xs font-extrabold text-[#AFAFAF]">CÂU i+1</div>
+            <div id="statFillCount" class="text-2xl font-black text-[#1CB0F6] mt-1">15</div>
+          </div>
+          <div class="bg-[#202F36] border-2 border-[#FF9600] rounded-2xl p-3">
+            <div class="text-xs font-extrabold text-[#AFAFAF]">GIAO TIẾP</div>
+            <div id="statSentCount" class="text-2xl font-black text-[#FF9600] mt-1">15</div>
+          </div>
+        </div>
+        <button onclick="finishVictoryAndReturn()" class="btn-3d-green w-full max-w-md py-4 rounded-2xl font-black text-lg uppercase tracking-wider">
+          VỀ BẢNG SRS CHÍNH
+        </button>
+      </section>
+
+    </main>
+
+    <!-- ==================== JSON IMPORT MODAL ==================== -->
+    <div id="jsonModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+      <div class="bg-[#202F36] border-2 border-[#37464F] rounded-3xl w-full max-w-lg p-5 flex flex-col gap-3 shadow-2xl animate-pop">
+        <div class="flex items-center justify-between">
+          <h3 id="modalLessonTitle" class="font-black text-lg text-[#1CB0F6]">NẠP DỮ LIỆU JSON</h3>
+          <button onclick="closeJsonModal()" class="text-[#AFAFAF] hover:text-white font-black text-lg">✕</button>
+        </div>
+        <textarea id="jsonInputArea" rows="8" placeholder='Dán mã JSON do Gemini tạo vào đây...' class="w-full bg-[#131F24] border-2 border-[#37464F] rounded-2xl p-3 text-xs font-mono text-white outline-none focus:border-[#1CB0F6] custom-scroll"></textarea>
+        <div id="jsonErrorMsg" class="text-xs font-black text-[#FF4B4B] hidden"></div>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button onclick="closeJsonModal()" class="btn-3d-card px-4 py-2.5 rounded-xl font-black text-xs uppercase">HỦY</button>
+          <button onclick="saveImportedJson()" class="btn-3d-green px-6 py-2.5 rounded-xl font-black text-xs uppercase">LƯU & KÍCH HOẠT BÀI HỌC</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastBox" class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-[#58CC02] text-[#131F24] font-black text-xs sm:text-sm px-5 py-2.5 rounded-2xl shadow-2xl z-50 tracking-wide uppercase">
+      ĐÃ SAO CHÉP PROMPT!
+    </div>
+
+  </div>
+
+  <script>
+    /********************************************************************
+     * 1. SOUND EFFECTS ENGINE (Web Audio API - Awakening & Energetic)
+     *    & KOREAN-ONLY TTS ENGINE (Web Speech API - strictly ko-KR)
+     ********************************************************************/
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSFX(type) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(780, now + 0.05);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'correct') {
+          // Bright Duolingo-style awakening chord chime (C5 -> E5 -> G5 -> C6)
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.055);
+            gain.gain.setValueAtTime(0.22, now + idx * 0.055);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.055 + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + idx * 0.055);
+            osc.stop(now + idx * 0.055 + 0.26);
+          });
+        } else if (type === 'wrong') {
+          // Low awakening buzz
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.linearRampToValueAtTime(115, now + 0.25);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.29);
+        } else if (type === 'fanfare') {
+          const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+          const times = [0, 0.09, 0.18, 0.27, 0.42, 0.55];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + times[idx]);
+            gain.gain.setValueAtTime(0.28, now + times[idx]);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + times[idx] + 0.35);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + times[idx]);
+            osc.stop(now + times[idx] + 0.36);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) playSFX('click');
+    }
+
+    // STRICT KOREAN-ONLY TTS: Only speaks if Hangul characters exist, never reads Vietnamese
+    function speakKorean(text) {
+      if (!soundEnabled || !('speechSynthesis' in window)) return;
+      if (!text) return;
+      // Clean blanks or punctuation, verify Hangul presence
+      const cleanText = text.replace(/___+/g, '').trim();
+      const hasHangul = /[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(cleanText);
+      if (!hasHangul) return;
+
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = 'ko-KR';
+        utter.rate = 0.92;
+        utter.pitch = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        const krVoice = voices.find(v => v.lang && (v.lang.includes('ko') || v.lang.includes('KR')));
+        if (krVoice) utter.voice = krVoice;
+
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    }
+
+    /********************************************************************
+     * 2. TOPIK 1-6 CURRICULUM & AUTHENTIC PRE-LOADED LESSON 1 DATA
+     ********************************************************************/
+    const TOPIK_LEVELS = [
+      { level: 1, name: "TOPIK 1", sub: "Sơ cấp 1", vocabGoal: "800 Từ", grammarGoal: "50 Ngữ pháp", color: "btn-3d-green", badgeColor: "#58CC02" },
+      { level: 2, name: "TOPIK 2", sub: "Sơ cấp 2", vocabGoal: "2.000 Từ", grammarGoal: "100 Ngữ pháp", color: "btn-3d-blue", badgeColor: "#1CB0F6" },
+      { level: 3, name: "TOPIK 3", sub: "Trung cấp 1", vocabGoal: "3.500 Từ", grammarGoal: "160 Ngữ pháp", color: "btn-3d-orange", badgeColor: "#FF9600" },
+      { level: 4, name: "TOPIK 4", sub: "Trung cấp 2", vocabGoal: "6.000 Từ", grammarGoal: "220 Ngữ pháp", color: "btn-3d-purple", badgeColor: "#CE82FF" },
+      { level: 5, name: "TOPIK 5", sub: "Cao cấp 1", vocabGoal: "8.000 Từ", grammarGoal: "280 Ngữ pháp", color: "btn-3d-red", badgeColor: "#FF4B4B" },
+      { level: 6, name: "TOPIK 6", sub: "Cao cấp 2", vocabGoal: "10.000+ Từ", grammarGoal: "300+ Ngữ pháp", color: "btn-3d-blue", badgeColor: "#1CB0F6" }
+    ];
+
+    // 35 Structured Topics per TOPIK Level (supports full 31+ SRS cycle out of the box)
+    const LEVEL_TOPICS = {
+      1: [
+        "Chào hỏi, Quốc tịch & Nghề nghiệp cơ bản",
+        "Gia đình, Tuổi tác & Kính ngữ sơ cấp",
+        "Trường học, Đồ dùng & Địa điểm",
+        "Sinh hoạt hàng ngày & Động từ cơ bản",
+        "Thời gian, Thứ ngày tháng & Lịch trình",
+        "Mua sắm tại cửa hàng & Đơn vị đếm",
+        "Gọi món tại nhà hàng & Ẩm thực Hàn Quốc",
+        "Phương tiện giao thông & Chỉ đường",
+        "Thời tiết, Bốn mùa & Cảm xúc",
+        "Sở thích, Cuối tuần & Thể thao",
+        "Hẹn gặp, Điện thoại & Tin nhắn",
+        "Bệnh viện, Triệu chứng & Hiệu thuốc",
+        "Bưu điện, Ngân hàng & Dịch vụ công",
+        "Nhà cửa, Nội thất & Dọn dẹp",
+        "Quần áo, Màu sắc & Mua sắm thời trang",
+        "Du lịch, Khách sạn & Đặt vé",
+        "Công việc bán thời gian & Văn phòng",
+        "Lễ tết truyền thống Hàn Quốc",
+        "Môi trường, Động vật & Thiên nhiên",
+        "Kế hoạch tương lai & Ước mơ",
+        "Cảm ơn, Xin lỗi & Phép lịch sự",
+        "Siêu thị, Nguyên liệu nấu ăn & Công thức",
+        "Phim ảnh, Âm nhạc & Văn hóa K-Pop",
+        "Thư viện, Sách báo & Học tập",
+        "Sân bay, Xuất nhập cảnh & Hành lý",
+        "Tiệm cắt tóc, Làm đẹp & Chăm sóc cá nhân",
+        "Tàu điện ngầm, Xe buýt & Chuyển tuyến",
+        "Ký túc xá, Phòng trọ & Hợp đồng cơ bản",
+        "Gửi đồ, Giao hàng nhanh (Taekbae)",
+        "Internet, Máy tính & Mạng xã hội",
+        "Lễ tốt nghiệp, Chúc mừng & Quà tặng",
+        "Thói quen sức khỏe & Tập thể dục",
+        "Cửa hàng tiện lợi 24h & Thanh toán thẻ",
+        "Sự cố thất lạc đồ đạc & Đồn cảnh sát",
+        "Tổng ôn giao tiếp Sơ cấp 1"
+      ],
+      2: [
+        "Phỏng vấn xin việc & Giới thiệu chuyên sâu",
+        "Đời sống công sở & Quy tắc kính ngữ",
+        "Thuê nhà (Jeonse/Wolse) & Bất động sản",
+        "Triệu chứng y tế chi tiết & Khám chuyên khoa",
+        "Giao dịch ngân hàng, Đổi tiền & Chuyển khoản",
+        "Đổi trả hàng hóa & Khiếu nại dịch vụ",
+        "Văn hóa ẩm thực vùng miền Hàn Quốc",
+        "So sánh sản phẩm & Mua sắm trực tuyến",
+        "Kế hoạch du lịch đảo Jeju & KTX",
+        "Tư vấn học tập & Đăng ký khóa học",
+        "Tổ chức sự kiện, Tiệc công ty (Hoesik)",
+        "Sửa chữa thiết bị gia dụng & Trung tâm bảo hành",
+        "Trải nghiệm văn hóa Hanbok & Cung điện",
+        "Thể thao, Câu lạc bộ & Hoạt động nhóm",
+        "Tin tức thời tiết & Cảnh báo thiên tai",
+        "Tâm lý, Chia sẻ悩み & Lời khuyên bạn bè",
+        "Quy định nơi công cộng & Biển báo",
+        "Thủ tục gia hạn Visa & Cục xuất nhập cảnh",
+        "Mối quan hệ xã hội & Tiền bối - Hậu bối",
+        "Tiết kiệm chi tiêu & Quản lý tài chính",
+        "Văn hóa tặng quà tân gia (Jibdeuri)",
+        "An toàn giao thông & Xử lý va chạm nhẹ",
+        "Sử dụng ứng dụng đặt đồ ăn & Bản đồ Hàn Quốc",
+        "Phân loại rác thải (Bullisugeo) tại Hàn Quốc",
+        "Chuẩn bị hồ sơ du học & Học bổng",
+        "Biểu diễn nghệ thuật, Nhạc kịch & Bảo tàng",
+        "Chăm sóc thú cưng & Bệnh viện thú y",
+        "Làm đẹp, Mỹ phẩm & Da liễu",
+        "Thay đổi lịch hẹn & Lý do bất khả kháng",
+        "Truyền thông, Quảng cáo & Xu hướng tiêu dùng",
+        "Học ngoại ngữ & Phương pháp ghi nhớ",
+        "Lễ cưới, Lễ tang & Văn hóa hiếu hỷ",
+        "Tình nguyện xã hội & Hoạt động cộng đồng",
+        "Khởi nghiệp nhỏ & Dịch vụ khách hàng",
+        "Tổng ôn cấu trúc nối câu Sơ cấp 2"
+      ]
+    };
+
+    // Generate default topics for TOPIK 3-6 if not explicitly listed
+    for (let lv = 3; lv <= 6; lv++) {
+      LEVEL_TOPICS[lv] = Array.from({ length: 35 }, (_, idx) => {
+        const themes = [
+          "Kinh tế vĩ mô & Thị trường lao động",
+          "Khoa học công nghệ & Trí tuệ nhân tạo",
+          "Biến đổi khí hậu & Năng lượng tái tạo",
+          "Giáo dục đại học & Nghiên cứu học thuật",
+          "Văn học hiện đại & Phê bình nghệ thuật",
+          "Chính sách phúc lợi xã hội & Dân số già",
+          "Luật pháp, Hợp đồng thương mại & Đàm phán",
+          "Y học tiên tiến & Đạo đức sinh học",
+          "Tâm lý học hành vi & Xã hội hiện đại",
+          "Ngoại giao quốc tế & Toàn cầu hóa"
+        ];
+        return `${themes[idx % themes.length]} (Chuyên đề ${idx + 1})`;
+      });
+    }
+
+    // FULL AUTHENTIC PRE-LOADED LESSON: TOPIK 1 - BÀI 1 (15 Vocab + 15 i+1 Fill-in-blanks + 15 Implicit Grammar Sentences)
+    const PRELOADED_L1_T1 = {
+      vocab: [
+        { kr: "학생", pronun: "haksaeng", vi: "Học sinh, sinh viên", options: ["Học sinh, sinh viên", "Giáo viên", "Nhân viên văn phòng", "Bác sĩ"] },
+        { kr: "선생님", pronun: "seonsaengnim", vi: "Giáo viên, thầy/cô giáo", options: ["Giáo viên, thầy/cô giáo", "Bạn học", "Đầu bếp", "Cảnh sát"] },
+        { kr: "회사원", pronun: "hoesawon", vi: "Nhân viên công ty", options: ["Nhân viên công ty", "Nhân viên ngân hàng", "Hướng dẫn viên", "Ca sĩ"] },
+        { kr: "한국", pronun: "hanguk", vi: "Hàn Quốc", options: ["Hàn Quốc", "Việt Nam", "Nhật Bản", "Hoa Kỳ"] },
+        { kr: "베트남", pronun: "beteunam", vi: "Việt Nam", options: ["Việt Nam", "Thái Lan", "Hàn Quốc", "Anh Quốc"] },
+        { kr: "사람", pronun: "saram", vi: "Người", options: ["Người", "Tên gọi", "Quốc gia", "Ngôn ngữ"] },
+        { kr: "이름", pronun: "ireum", vi: "Tên", options: ["Tên", "Tuổi", "Quê hương", "Số điện thoại"] },
+        { kr: "저", pronun: "jeo", vi: "Tôi (khiêm nhường)", options: ["Tôi (khiêm nhường)", "Bạn", "Anh ấy", "Chúng ta"] },
+        { kr: "이분", pronun: "ibun", vi: "Vị này (kính ngữ)", options: ["Vị này (kính ngữ)", "Cái này", "Nơi này", "Hôm nay"] },
+        { kr: "친구", pronun: "chingu", vi: "Bạn bè", options: ["Bạn bè", "Gia đình", "Đồng nghiệp", "Hàng xóm"] },
+        { kr: "의사", pronun: "uisa", vi: "Bác sĩ", options: ["Bác sĩ", "Y tá", "Dược sĩ", "Kỹ sư"] },
+        { kr: "요리사", pronun: "yorisa", vi: "Đầu bếp", options: ["Đầu bếp", "Tài xế", "Nhà báo", "Luật sư"] },
+        { kr: "은행원", pronun: "eunhaengwon", vi: "Nhân viên ngân hàng", options: ["Nhân viên ngân hàng", "Nhân viên bưu điện", "Tiếp viên", "Thư ký"] },
+        { kr: "어느", pronun: "eoneu", vi: "Nào (dùng trước danh từ)", options: ["Nào (dùng trước danh từ)", "Ở đâu", "Khi nào", "Bao nhiêu"] },
+        { kr: "나라", pronun: "nara", vi: "Đất nước, quốc gia", options: ["Đất nước, quốc gia", "Thành phố", "Thủ đô", "Quê quán"] }
+      ],
+      fillBlanks: [
+        { sentenceKr: "저는 베트남 ___입니다.", fullKr: "저는 베트남 사람입니다.", answer: "사람", options: ["사람", "나라", "이름", "친구"], hintVi: "Tôi là người Việt Nam." },
+        { sentenceKr: "제 ___은 민수입니다.", fullKr: "제 이름은 민수입니다.", answer: "이름", options: ["이름", "저", "의사", "한국"], hintVi: "Tên của tôi là Minsu." },
+        { sentenceKr: "___은 한국어 선생님입니다.", fullKr: "이분은 한국어 선생님입니다.", answer: "이분", options: ["이분", "어느", "나라", "베트남"], hintVi: "Vị này là giáo viên tiếng Hàn." },
+        { sentenceKr: "영수 씨는 대학교 ___이에요.", fullKr: "영수 씨는 대학교 학생이에요.", answer: "학생", options: ["학생", "나라", "이름", "어느"], hintVi: "Bạn Youngsoo là sinh viên đại học." },
+        { sentenceKr: "어느 ___ 사람입니까?", fullKr: "어느 나라 사람입니까?", answer: "나라", options: ["나라", "사람", "친구", "저"], hintVi: "Bạn là người nước nào?" },
+        { sentenceKr: "___는 한국어를 공부합니다.", fullKr: "저는 한국어를 공부합니다.", answer: "저", options: ["저", "이분", "어느", "이름"], hintVi: "Tôi học tiếng Hàn." },
+        { sentenceKr: "제 ___는 은행원이에요.", fullKr: "제 친구는 은행원이에요.", answer: "친구", options: ["친구", "나라", "한국", "베트남"], hintVi: "Bạn của tôi là nhân viên ngân hàng." },
+        { sentenceKr: "아버지는 병원 ___입니다.", fullKr: "아버지는 병원 의사입니다.", answer: "의사", options: ["의사", "요리사", "학생", "이름"], hintVi: "Bố tôi là bác sĩ bệnh viện." },
+        { sentenceKr: "형은 식당에서 일하는 ___예요.", fullKr: "형은 식당에서 일하는 요리사예요.", answer: "요리사", options: ["요리사", "은행원", "회사원", "선생님"], hintVi: "Anh trai tôi là đầu bếp làm việc ở nhà hàng." },
+        { sentenceKr: "누나는 서울에서 일하는 ___입니다.", fullKr: "누나는 서울에서 일하는 회사원입니다.", answer: "회사원", options: ["회사원", "학생", "나라", "저"], hintVi: "Chị gái tôi là nhân viên công ty làm việc ở Seoul." },
+        { sentenceKr: "___ 나라에서 왔어요?", fullKr: "어느 나라에서 왔어요?", answer: "어느", options: ["어느", "이분", "사람", "이름"], hintVi: "Bạn đến từ đất nước nào?" },
+        { sentenceKr: "우리 ___은 아주 친절해요.", fullKr: "우리 선생님은 아주 친절해요.", answer: "선생님", options: ["선생님", "한국", "베트남", "나라"], hintVi: "Giáo viên của chúng tôi rất thân thiện." },
+        { sentenceKr: "민지 씨는 ___ 사람이에요.", fullKr: "민지 씨는 한국 사람이에요.", answer: "한국", options: ["한국", "이름", "의사", "이분"], hintVi: "Bạn Minji là người Hàn Quốc." },
+        { sentenceKr: "란 씨는 ___에서 왔습니다.", fullKr: "란 씨는 베트남에서 왔습니다.", answer: "베트남", options: ["베트남", "사람", "친구", "학생"], hintVi: "Bạn Lan đến từ Việt Nam." },
+        { sentenceKr: "수진 씨는 은행에서 일하는 ___입니다.", fullKr: "수진 씨는 은행에서 일하는 은행원입니다.", answer: "은행원", options: ["은행원", "요리사", "의사", "학생"], hintVi: "Sujin là nhân viên ngân hàng." }
+      ],
+      sentences: [
+        { kr: "안녕하세요? 저는 베트남에서 온 학생입니다.", pronun: "annyeonghaseyo? jeoneun beteunameseo on haksaengimnida.", vi: "Xin chào, tôi là sinh viên đến từ Việt Nam.", options: ["Xin chào, tôi là sinh viên đến từ Việt Nam.", "Xin chào, tôi là giáo viên tiếng Việt.", "Rất vui được gặp nhân viên người Việt Nam.", "Tôi đang học tiếng Hàn tại Việt Nam."] },
+        { kr: "이분은 우리 학교 한국어 선생님입니다.", pronun: "ibuneun uri hakgyo hangugeo seonsaengnimimnida.", vi: "Vị này là giáo viên tiếng Hàn của trường chúng tôi.", options: ["Vị này là giáo viên tiếng Hàn của trường chúng tôi.", "Người kia là sinh viên trường đại học Hàn Quốc.", "Bạn tôi đang làm việc tại trường học Hàn Quốc.", "Vị này là bác sĩ người Hàn Quốc."] },
+        { kr: "실례지만 이름이 무엇입니까?", pronun: "sillyejiman ireumi mueosimnikka?", vi: "Xin lỗi cho hỏi tên của bạn là gì ạ?", options: ["Xin lỗi cho hỏi tên của bạn là gì ạ?", "Xin lỗi bạn là người nước nào ạ?", "Xin lỗi nghề nghiệp của bạn là gì ạ?", "Xin lỗi vị này là ai vậy ạ?"] },
+        { kr: "저는 회사원이 아니라 대학교 학생이에요.", pronun: "jeoneun hoesawoni anira daehakgyo haksaengieyo.", vi: "Tôi không phải là nhân viên công ty mà là sinh viên đại học.", options: ["Tôi không phải là nhân viên công ty mà là sinh viên đại học.", "Tôi vừa là nhân viên công ty vừa là sinh viên.", "Bạn tôi là nhân viên công ty chứ không phải sinh viên.", "Tôi muốn trở thành nhân viên công ty sau khi tốt nghiệp."] },
+        { kr: "제 친구는 한국 은행에서 일하는 은행원입니다.", pronun: "je chinguneun hanguk eunhaengeseo ilhaneun eunhaengwonimnida.", vi: "Bạn của tôi là nhân viên ngân hàng làm việc tại ngân hàng Hàn Quốc.", options: ["Bạn của tôi là nhân viên ngân hàng làm việc tại ngân hàng Hàn Quốc.", "Tôi có người bạn Hàn Quốc đang mở tài khoản ngân hàng.", "Em trai tôi là nhân viên công ty tại Hàn Quốc.", "Vị này là giám đốc ngân hàng Hàn Quốc."] },
+        { kr: "민수 씨는 어느 나라 사람입니까?", pronun: "minsu ssineun eoneu nara saramimnikka?", vi: "Anh Minsu là người nước nào vậy ạ?", options: ["Anh Minsu là người nước nào vậy ạ?", "Anh Minsu đang sống ở thành phố nào?", "Tên tiếng Hàn của anh Minsu là gì?", "Anh Minsu làm nghề gì ở Hàn Quốc?"] },
+        { kr: "처음 뵙겠습니다. 저는 한국 사람 박지훈입니다.", pronun: "cheoeum boepgetseumnida. jeoneun hanguk saram bakjihunimnida.", vi: "Lần đầu được gặp bạn. Tôi là Park Jihun, người Hàn Quốc.", options: ["Lần đầu được gặp bạn. Tôi là Park Jihun, người Hàn Quốc.", "Hẹn gặp lại bạn lần sau tại Hàn Quốc nhé.", "Tôi là bạn thân của Park Jihun ở Hàn Quốc.", "Cảm ơn anh Park Jihun đã giúp đỡ tôi."] },
+        { kr: "우리 형은 유명한 식당의 요리사예요.", pronun: "uri hyeongeun yumyeonghan sikdangui yorisayeyo.", vi: "Anh trai tôi là đầu bếp của một nhà hàng nổi tiếng.", options: ["Anh trai tôi là đầu bếp của một nhà hàng nổi tiếng.", "Anh trai tôi rất thích ăn món Hàn ở nhà hàng.", "Bạn tôi là bác sĩ tại bệnh viện lớn.", "Em trai tôi đang học nấu ăn ở Hàn Quốc."] },
+        { kr: "그분은 서울대학교 병원 의사입니다.", pronun: "geubuneun seouldaehakgyo byeongwon uisaimnida.", vi: "Vị ấy là bác sĩ của bệnh viện Đại học Quốc gia Seoul.", options: ["Vị ấy là bác sĩ của bệnh viện Đại học Quốc gia Seoul.", "Vị ấy là giáo sư dạy tại Đại học Quốc gia Seoul.", "Tôi đang khám bệnh ở bệnh viện Seoul.", "Bạn của tôi là sinh viên y khoa ở Seoul."] },
+        { kr: "란 씨도 한국어를 공부하는 학생입니까?", pronun: "ran ssido hangugeoreul gongbuhaneun haksaengimnikka?", vi: "Bạn Lan cũng là sinh viên đang học tiếng Hàn phải không?", options: ["Bạn Lan cũng là sinh viên đang học tiếng Hàn phải không?", "Bạn Lan là giáo viên dạy tiếng Hàn phải không?", "Bạn Lan đã sống ở Hàn Quốc bao lâu rồi?", "Bạn Lan không thích học tiếng Hàn phải không?"] },
+        { kr: "네, 만나서 정말 반갑습니다.", pronun: "ne, mannaseo jeongmal bangapseumnida.", vi: "Vâng, thật sự rất vui được gặp bạn.", options: ["Vâng, thật sự rất vui được gặp bạn.", "Vâng, xin cảm ơn bạn rất nhiều.", "Không, tôi chưa từng gặp người đó.", "Vâng, hẹn gặp lại bạn vào ngày mai."] },
+        { kr: "제 이름은 흐엉이고 직업은 회사원입니다.", pronun: "je ireumeun heueongigo jigeobeun hoesawonimnida.", vi: "Tên tôi là Hương và nghề nghiệp là nhân viên công ty.", options: ["Tên tôi là Hương và nghề nghiệp là nhân viên công ty.", "Bạn Hương là nhân viên ngân hàng tại Việt Nam.", "Tên của vị này là Hương, giáo viên tiếng Hàn.", "Tôi làm việc cùng công ty với bạn Hương."] },
+        { kr: "이분은 제 베트남 친구 민 씨예요.", pronun: "ibuneun je beteunam chingu min ssiyeyo.", vi: "Vị này là Minh, người bạn Việt Nam của tôi.", options: ["Vị này là Minh, người bạn Việt Nam của tôi.", "Anh Minh đang đi du lịch ở Việt Nam.", "Tôi đã gặp anh Minh tại Việt Nam năm ngoái.", "Người kia là đồng nghiệp của anh Minh."] },
+        { kr: "선생님, 오늘 수업이 몇 시에 끝납니까?", pronun: "seonsaengnim, oneul sueobi myeot sie kkeutnamnikka?", vi: "Thưa thầy/cô, tiết học hôm nay mấy giờ kết thúc ạ?", options: ["Thưa thầy/cô, tiết học hôm nay mấy giờ kết thúc ạ?", "Thưa thầy/cô, bài tập hôm nay ở trang mấy ạ?", "Thưa thầy/cô, ngày mai chúng ta có học không ạ?", "Thưa thầy/cô, từ vựng này có nghĩa là gì ạ?"] },
+        { kr: "저는 한국 회사에서 일하고 싶습니다.", pronun: "jeoneun hanguk hoesaeseo ilhago sipseumnida.", vi: "Tôi muốn làm việc tại công ty Hàn Quốc.", options: ["Tôi muốn làm việc tại công ty Hàn Quốc.", "Tôi đang làm việc cho một công ty Hàn Quốc.", "Công ty Hàn Quốc này có rất nhiều nhân viên.", "Tôi đã nghỉ việc ở công ty Hàn Quốc."] }
+      ]
+    };
+
+    /********************************************************************
+     * 3. STATE MANAGEMENT & LOCALSTORAGE PERSISTENCE
+     ********************************************************************/
+    const STORAGE_KEY = 'K_TOPIK_SRS_STATE_V1';
+
+    let appState = {
+      currentLevel: 1,
+      srsDay: 1, // Lesson progression day (1 to 35+). When at 31, shows Lesson 31 (New) + 30, 28, 24, 16, 1
+      streak: 1,
+      lastStudyDate: null,
+      weeklyDays: [false, false, false, false, false, false, false], // T2 -> CN
+      completedLessons: {}, // key: "L{level}_B{lessonNum}" -> boolean
+      customLessons: {}     // key: "L{level}_B{lessonNum}" -> { vocab, fillBlanks, sentences }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {}
+
+      // Ensure Lesson 1 of TOPIK 1 is always preloaded if not customized
+      if (!appState.customLessons['L1_B1']) {
+        appState.customLessons['L1_B1'] = PRELOADED_L1_T1;
+      }
+      // Mark current weekday active if studied today
+      const todayStr = new Date().toISOString().slice(0, 10);
+      if (appState.lastStudyDate === todayStr) {
+        markTodayDot();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {}
+    }
+
+    function markTodayDot() {
+      const jsDay = new Date().getDay(); // 0 = Sun, 1 = Mon ...
+      const idx = jsDay === 0 ? 6 : jsDay - 1;
+      appState.weeklyDays[idx] = true;
+    }
+
+    function getLessonKey(level, lessonNum) {
+      return `L${level}_B${lessonNum}`;
+    }
+
+    // Generate authentic fallback dataset for any SRS review lesson if user jumps to Day 31 immediately
+    function getOrBuildLessonData(level, lessonNum) {
+      const key = getLessonKey(level, lessonNum);
+      if (appState.customLessons[key]) {
+        return appState.customLessons[key];
+      }
+      return null;
+    }
+
+    /********************************************************************
+     * 4. REAL-TIME CLOCK & DASHBOARD RENDERING
+     ********************************************************************/
+    function updateClock() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      const clockEl = document.getElementById('liveClock');
+      if (clockEl) clockEl.textContent = `${hh}:${mm}:${ss}`;
+
+      const daysVi = ['CHỦ NHẬT', 'THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+      const dName = daysVi[now.getDay()];
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mo = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      const dateEl = document.getElementById('liveDate');
+      if (dateEl) dateEl.textContent = `${dName}, ${dd}/${mo}/${yyyy}`;
+    }
+
+    function renderDashboard() {
+      document.getElementById('streakCount').textContent = appState.streak;
+      const totalDone = Object.keys(appState.completedLessons).filter(k => appState.completedLessons[k]).length;
+      document.getElementById('totalDoneCount').textContent = totalDone;
+      document.getElementById('activeLevelBadge').textContent = `TOPIK ${appState.currentLevel}`;
+      document.getElementById('currentSrsDayLabel').textContent = appState.srsDay;
+
+      // Render T2 - CN row
+      const labels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+      const jsDay = new Date().getDay();
+      const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+      const weekRow = document.getElementById('weekDaysRow');
+      weekRow.innerHTML = labels.map((lb, idx) => {
+        const active = appState.weeklyDays[idx] || idx === todayIdx;
+        return `
+          <div class="flex flex-col items-center py-1.5 rounded-xl border ${active ? 'bg-[#58CC02]/20 border-[#58CC02] text-[#58CC02]' : 'bg-[#131F24] border-[#37464F] text-[#AFAFAF]'}">
+            <span class="text-[10px] font-black">${lb}</span>
+            <span class="text-sm mt-0.5">${active ? '🔥' : '•'}</span>
+          </div>
+        `;
+      }).join('');
+
+      renderSrsBoard();
+    }
+
+    // SRS Calculation: 1 New Lesson (N) + 5 Review Intervals: N-1, N-3, N-7, N-15, N-30
+    function renderSrsBoard() {
+      const n = appState.srsDay;
+      const lv = appState.currentLevel;
+      const slots = [
+        { tag: "BÀI MỚI HÔM NAY", offset: 0, lessonNum: n, color: "border-[#58CC02] bg-[#58CC02]/15", badge: "bg-[#58CC02] text-[#131F24]" },
+        { tag: "ÔN 1 NGÀY TRƯỚC", offset: 1, lessonNum: n - 1, color: "border-[#1CB0F6] bg-[#1CB0F6]/10", badge: "bg-[#1CB0F6] text-[#131F24]" },
+        { tag: "ÔN 3 NGÀY TRƯỚC", offset: 3, lessonNum: n - 3, color: "border-[#1CB0F6] bg-[#1CB0F6]/10", badge: "bg-[#1CB0F6] text-[#131F24]" },
+        { tag: "ÔN 7 NGÀY TRƯỚC", offset: 7, lessonNum: n - 7, color: "border-[#FF9600] bg-[#FF9600]/10", badge: "bg-[#FF9600] text-[#131F24]" },
+        { tag: "ÔN 15 NGÀY TRƯỚC", offset: 15, lessonNum: n - 15, color: "border-[#CE82FF] bg-[#CE82FF]/10", badge: "bg-[#CE82FF] text-[#131F24]" },
+        { tag: "ÔN 30 NGÀY TRƯỚC", offset: 30, lessonNum: n - 30, color: "border-[#FF4B4B] bg-[#FF4B4B]/10", badge: "bg-[#FF4B4B] text-white" }
+      ];
+
+      const grid = document.getElementById('srsGrid');
+      grid.innerHTML = slots.map(slot => {
+        const isAvailable = slot.lessonNum >= 1;
+        if (!isAvailable) {
+          return `
+            <div class="rounded-2xl border-2 border-[#37464F]/50 bg-[#131F24]/60 p-2.5 flex flex-col justify-between opacity-50">
+              <div class="text-[10px] font-black uppercase text-[#AFAFAF]">${slot.tag}</div>
+              <div class="text-xs font-extrabold text-[#AFAFAF] my-1">Chưa đến chu kỳ</div>
+              <div class="text-[10px] font-bold text-[#37464F]">Cần đạt Bài ${slot.offset + 1}</div>
+            </div>
+          `;
+        }
+
+        const key = getLessonKey(lv, slot.lessonNum);
+        const hasData = !!appState.customLessons[key];
+        const isDone = !!appState.completedLessons[key];
+        const topicName = (LEVEL_TOPICS[lv] && LEVEL_TOPICS[lv][slot.lessonNum - 1]) || `Chủ đề ${slot.lessonNum}`;
+
+        return `
+          <button onclick="launchSrsSlot(${lv}, ${slot.lessonNum})" class="text-left rounded-2xl border-2 ${slot.color} p-2.5 flex flex-col justify-between transition-transform active:scale-95 hover:brightness-110">
+            <div class="flex items-center justify-between gap-1 w-full">
+              <span class="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase ${slot.badge}">${slot.tag}</span>
+              <span class="text-xs">${isDone ? '✅' : (hasData ? '⚡' : '📥')}</span>
+            </div>
+            <div class="mt-1">
+              <div class="text-sm font-black text-white leading-tight">Bài ${slot.lessonNum} • TOPIK ${lv}</div>
+              <div class="text-[11px] font-bold text-[#AFAFAF] truncate mt-0.5">${topicName}</div>
+            </div>
+            <div class="mt-1.5 text-[10px] font-black uppercase ${hasData ? 'text-[#58CC02]' : 'text-[#FF9600]'}">
+              ${hasData ? '▶ BẤM ĐỂ HỌC NGAY' : '⚙ BẤM ĐỂ NẠP BÀI'}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function changeSrsDay(delta) {
+      playSFX('click');
+      appState.srsDay = Math.max(1, Math.min(35, appState.srsDay + delta));
+      saveState();
+      renderDashboard();
+    }
+
+    function setSrsDay31() {
+      playSFX('correct');
+      appState.srsDay = 31;
+      saveState();
+      renderDashboard();
+      showToast("ĐÃ CHUYỂN ĐẾN BÀI 31 (ĐỦ 5 BÀI ÔN + 1 BÀI MỚI)");
+    }
+
+    function launchSrsSlot(level, lessonNum) {
+      playSFX('click');
+      appState.currentLevel = level;
+      const key = getLessonKey(level, lessonNum);
+      if (appState.customLessons[key]) {
+        startLessonQuiz(level, lessonNum);
+      } else {
+        // Switch to Lessons tab & scroll to that lesson so user can copy Prompt or Import JSON
+        switchTab('lessons');
+        setTimeout(() => {
+          const el = document.getElementById(`lesson-card-${lessonNum}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 80);
+      }
+    }
+
+    function handleQuickStart() {
+      playSFX('click');
+      const lv = appState.currentLevel;
+      const key = getLessonKey(lv, appState.srsDay);
+      if (appState.customLessons[key]) {
+        startLessonQuiz(lv, appState.srsDay);
+      } else if (appState.customLessons['L1_B1']) {
+        startLessonQuiz(1, 1);
+      } else {
+        switchTab('lessons');
+      }
+    }
+
+    /********************************************************************
+     * 5. TAB NAVIGATION & LEVEL MENU
+     ********************************************************************/
+    function switchTab(tabName) {
+      playSFX('click');
+      const views = ['dashboard', 'levels', 'lessons', 'quiz', 'victory'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.add('hidden');
+      });
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      // Update header tab button styles
+      ['dashboard', 'levels', 'lessons'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (!btn) return;
+        if (t === tabName) {
+          btn.className = "flex-1 py-2 px-2 rounded-xl font-black text-xs sm:text-sm tracking-wide transition-all bg-[#58CC02] text-white shadow";
+        } else {
+          btn.className = "flex-1 py-2 px-2 rounded-xl font-black text-xs sm:text-sm tracking-wide transition-all text-[#AFAFAF] hover:text-white";
+        }
+      });
+
+      if (tabName === 'dashboard') renderDashboard();
+      if (tabName === 'levels') renderLevelsGrid();
+      if (tabName === 'lessons') renderLessonsList();
+    }
+
+    function renderLevelsGrid() {
+      const grid = document.getElementById('levelsGrid');
+      grid.innerHTML = TOPIK_LEVELS.map(item => {
+        // Count loaded & completed lessons in this level
+        let doneCount = 0;
+        for (let i = 1; i <= 35; i++) {
+          if (appState.completedLessons[getLessonKey(item.level, i)]) doneCount++;
+        }
+        return `
+          <button onclick="selectLevel(${item.level})" class="btn-3d-card rounded-2xl p-3.5 flex flex-col justify-between text-left relative overflow-hidden">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xl sm:text-2xl font-black text-white">${item.name}</span>
+              <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase bg-[#131F24] border border-[#37464F]" style="color:${item.badgeColor}">${item.sub}</span>
+            </div>
+            <div class="my-1">
+              <div class="text-xs font-extrabold text-[#1CB0F6]">📚 ${item.vocabGoal}</div>
+              <div class="text-xs font-extrabold text-[#FF9600] mt-0.5">🧩 ${item.grammarGoal}</div>
+            </div>
+            <div class="w-full flex items-center justify-between text-[11px] font-black text-[#AFAFAF] pt-1 border-t border-[#37464F]">
+              <span>Tiến độ: ${doneCount}/35 bài</span>
+              <span class="text-[#58CC02]">CHỌN ➜</span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectLevel(lv) {
+      playSFX('click');
+      appState.currentLevel = lv;
+      saveState();
+      const selectEl = document.getElementById('quickLevelSelect');
+      if (selectEl) selectEl.value = String(lv);
+      switchTab('lessons');
+    }
+
+    /********************************************************************
+     * 6. LESSON LIST, DYNAMIC i+1 GEMINI PROMPT GENERATOR & JSON LOADER
+     ********************************************************************/
+    function renderLessonsList() {
+      const lv = appState.currentLevel;
+      const lvMeta = TOPIK_LEVELS.find(x => x.level === lv) || TOPIK_LEVELS[0];
+      document.getElementById('lessonListLevelTitle').textContent = `${lvMeta.name} - ${lvMeta.sub.toUpperCase()}`;
+      document.getElementById('quickLevelSelect').value = String(lv);
+
+      const topics = LEVEL_TOPICS[lv] || [];
+      const container = document.getElementById('lessonsContainer');
+
+      container.innerHTML = topics.map((topic, index) => {
+        const lessonNum = index + 1;
+        const key = getLessonKey(lv, lessonNum);
+        const hasData = !!appState.customLessons[key];
+        const isCompleted = !!appState.completedLessons[key];
+        const vocabLen = hasData ? appState.customLessons[key].vocab.length : 0;
+
+        // STRICT RULE: Once JSON data is loaded, the Copy Prompt & Load JSON buttons disappear completely!
+        const actionButtonsHtml = hasData
+          ? `
+            <button onclick="startLessonQuiz(${lv}, ${lessonNum})" class="${isCompleted ? 'btn-3d-blue' : 'btn-3d-green'} px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider shrink-0">
+              ${isCompleted ? '↻ ÔN TẬP (' + vocabLen + ' TỪ)' : '▶ HỌC NGAY (' + vocabLen + ' TỪ)'}
+            </button>
+          `
+          : `
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="copyGeminiPrompt(${lv}, ${lessonNum})" class="btn-3d-orange px-2.5 py-2 rounded-xl font-black text-[11px] uppercase tracking-wide" title="Copy Prompt soạn bài i+1 cho Gemini">
+                📋 PROMPT
+              </button>
+              <button onclick="openJsonModal(${lv}, ${lessonNum})" class="btn-3d-blue px-2.5 py-2 rounded-xl font-black text-[11px] uppercase tracking-wide" title="Dán JSON bài học">
+                📥 NẠP JSON
+              </button>
+            </div>
+          `;
+
+        return `
+          <div id="lesson-card-${lessonNum}" class="bg-[#202F36] border-2 ${isCompleted ? 'border-[#58CC02]' : 'border-[#37464F]'} rounded-2xl p-3 flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase ${hasData ? 'bg-[#58CC02] text-[#131F24]' : 'bg-[#131F24] text-[#AFAFAF] border border-[#37464F]'}">
+                  BÀI ${lessonNum}
+                </span>
+                ${isCompleted ? '<span class="text-xs font-black text-[#58CC02]">✓ ĐÃ THUỘC</span>' : ''}
+              </div>
+              <div class="font-black text-sm sm:text-base text-white truncate mt-1">${topic}</div>
+            </div>
+            ${actionButtonsHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Dynamic i+1 Prompt Builder tailored to specific TOPIK level & lesson topic
+    function buildGeminiPrompt(level, lessonNum) {
+      const topic = (LEVEL_TOPICS[level] && LEVEL_TOPICS[level][lessonNum - 1]) || `Chủ đề ${lessonNum}`;
+      return `Bạn là chuyên gia biên soạn giáo trình tiếng Hàn TOPIK chuẩn quốc tế theo phương pháp Comprehensible Input (i+1).
+Hãy soạn dữ liệu đầy đủ, chi tiết, tuyệt đối KHÔNG làm dữ liệu mẫu qua loa cho:
+- Cấp độ: TOPIK ${level}
+- Bài số: ${lessonNum}
+- Chủ đề trọng tâm: "${topic}"
+
+YÊU CẦU NGHIÊM NGẶT:
+1. Số lượng: Soạn chính xác 20 từ vựng cốt lõi thuộc chủ đề "${topic}" đúng trình độ TOPIK ${level}, kèm 20 câu bài tập điền từ khuyết (i+1) và 20 câu giao tiếp thực tế có lồng ghép NGỮ PHÁP NGẦM trọng tâm của TOPIK ${level}.
+2. Phiên âm ("pronun"): Dùng Romanization chuẩn Quốc ngữ Hàn Quốc (Revised Romanization) để hỗ trợ đọc chính xác.
+3. Mỗi câu hỏi trắc nghiệm phải có mảng "options" gồm đúng 4 lựa chọn (trong đó có 1 đáp án đúng trùng khớp tuyệt đối với trường "vi" hoặc "answer" và 3 đáp án gây nhiễu hợp lý).
+4. Chỉ trả về DUY NHẤT 1 khối mã JSON hợp lệ (không kèm lời giải thích ngoài JSON) theo cấu trúc sau:
+
+{
+  "vocab": [
+    {
+      "kr": "Từ tiếng Hàn",
+      "pronun": "phiên âm romanization",
+      "vi": "Nghĩa tiếng Việt chính xác",
+      "options": ["Nghĩa tiếng Việt chính xác", "Nghĩa nhiễu 1", "Nghĩa nhiễu 2", "Nghĩa nhiễu 3"]
+    }
+  ],
+  "fillBlanks": [
+    {
+      "sentenceKr": "Câu tiếng Hàn i+1 có chứa chỗ trống ___",
+      "fullKr": "Câu tiếng Hàn hoàn chỉnh sau khi điền từ",
+      "answer": "Từ tiếng Hàn cần điền",
+      "options": ["Từ tiếng Hàn cần điền", "Từ tiếng Hàn nhiễu 1", "Từ tiếng Hàn nhiễu 2", "Từ tiếng Hàn nhiễu 3"],
+      "hintVi": "Nghĩa tiếng Việt của cả câu hoàn chỉnh"
+    }
+  ],
+  "sentences": [
+    {
+      "kr": "Câu giao tiếp tiếng Hàn tự nhiên chứa từ vựng trong bài và ngữ pháp ngầm TOPIK ${level}",
+      "pronun": "phiên âm romanization của cả câu",
+      "vi": "Nghĩa tiếng Việt chuẩn xác của câu",
+      "options": ["Nghĩa tiếng Việt chuẩn xác của câu", "Nghĩa câu nhiễu 1", "Nghĩa câu nhiễu 2", "Nghĩa câu nhiễu 3"]
+    }
+  ]
+}`;
+    }
+
+    function copyGeminiPrompt(level, lessonNum) {
+      playSFX('click');
+      const promptText = buildGeminiPrompt(level, lessonNum);
+      const temp = document.createElement('textarea');
+      temp.value = promptText;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(`ĐÃ COPY PROMPT BÀI ${lessonNum} (TOPIK ${level})!`);
+    }
+
+    let modalTarget = { level: 1, lessonNum: 1 };
+
+    function openJsonModal(level, lessonNum) {
+      playSFX('click');
+      modalTarget = { level, lessonNum };
+      document.getElementById('modalLessonTitle').textContent = `NẠP JSON: TOPIK ${level} - BÀI ${lessonNum}`;
+      document.getElementById('jsonInputArea').value = '';
+      document.getElementById('jsonErrorMsg').classList.add('hidden');
+      document.getElementById('jsonModal').classList.remove('hidden');
+    }
+
+    function closeJsonModal() {
+      playSFX('click');
+      document.getElementById('jsonModal').classList.add('hidden');
+    }
+
+    function saveImportedJson() {
+      const raw = document.getElementById('jsonInputArea').value.trim();
+      const errEl = document.getElementById('jsonErrorMsg');
+      if (!raw) {
+        errEl.textContent = "Vui lòng dán nội dung JSON vào ô trống!";
+        errEl.classList.remove('hidden');
+        playSFX('wrong');
+        return;
+      }
+
+      try {
+        // Strip markdown code fences if user copied ```json ... ```
+        const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+        const parsed = JSON.parse(cleaned);
+
+        if (!Array.isArray(parsed.vocab) || !Array.isArray(parsed.fillBlanks) || !Array.isArray(parsed.sentences) || parsed.vocab.length === 0) {
+          throw new Error("Cấu trúc JSON thiếu mảng vocab, fillBlanks hoặc sentences.");
+        }
+
+        const key = getLessonKey(modalTarget.level, modalTarget.lessonNum);
+        appState.customLessons[key] = parsed;
+        saveState();
+
+        playSFX('fanfare');
+        closeJsonModal();
+        renderLessonsList();
+        renderDashboard();
+        showToast(`ĐÃ NẠP THÀNH CÔNG BÀI ${modalTarget.lessonNum}!`);
+      } catch (err) {
+        playSFX('wrong');
+        errEl.textContent = "Lỗi định dạng JSON: " + err.message;
+        errEl.classList.remove('hidden');
+      }
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+      setTimeout(() => {
+        box.classList.add('hidden');
+      }, 2400);
+    }
+
+    /********************************************************************
+     * 7. 3-STAGE DUOLINGO QUIZ ENGINE
+     *    Stage 1: Vocab + Romanization -> 4 Vietnamese choices
+     *    Stage 2: Fill-in-the-blank i+1 -> 4 Korean word choices
+     *    Stage 3: Full Korean Sentence -> 4 Vietnamese meaning choices
+     ********************************************************************/
+    let quizState = {
+      level: 1,
+      lessonNum: 1,
+      stage: 1, // 1, 2, 3
+      queue: [],
+      currentIndex: 0,
+      answered: false,
+      currentAudioText: "",
+      counts: { vocab: 0, fill: 0, sent: 0 }
+    };
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startLessonQuiz(level, lessonNum) {
+      const data = getOrBuildLessonData(level, lessonNum);
+      if (!data) return;
+
+      playSFX('click');
+      quizState.level = level;
+      quizState.lessonNum = lessonNum;
+      quizState.stage = 1;
+      quizState.counts = {
+        vocab: data.vocab.length,
+        fill: data.fillBlanks.length,
+        sent: data.sentences.length
+      };
+
+      loadStageQueue(1);
+
+      // Hide top tabs bar during focused quiz
+      ['dashboard', 'levels', 'lessons', 'victory'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+      });
+      document.getElementById('view-quiz').classList.remove('hidden');
+
+      renderQuizQuestion();
+    }
+
+    function loadStageQueue(stageNum) {
+      const data = getOrBuildLessonData(quizState.level, quizState.lessonNum);
+      quizState.stage = stageNum;
+      quizState.currentIndex = 0;
+
+      if (stageNum === 1) {
+        quizState.queue = data.vocab.map(item => ({
+          type: 'vocab',
+          mainKr: item.kr,
+          speakKr: item.kr,
+          phonetic: `[${item.pronun}]`,
+          hint: '',
+          correct: item.vi,
+          options: shuffleArray(item.options),
+          speakOptionOnClick: false // Options are Vietnamese -> DO NOT speak
+        }));
+      } else if (stageNum === 2) {
+        quizState.queue = data.fillBlanks.map(item => ({
+          type: 'fill',
+          mainKr: item.sentenceKr,
+          speakKr: item.fullKr || item.sentenceKr,
+          phonetic: '',
+          hint: item.hintVi || '',
+          correct: item.answer,
+          options: shuffleArray(item.options),
+          speakOptionOnClick: true // Options are Korean -> Speak Korean on click!
+        }));
+      } else if (stageNum === 3) {
+        quizState.queue = data.sentences.map(item => ({
+          type: 'sentence',
+          mainKr: item.kr,
+          speakKr: item.kr,
+          phonetic: item.pronun ? `[${item.pronun}]` : '',
+          hint: '',
+          correct: item.vi,
+          options: shuffleArray(item.options),
+          speakOptionOnClick: false // Options are Vietnamese -> DO NOT speak
+        }));
+      }
+    }
+
+    function renderQuizQuestion() {
+      const q = quizState.queue[quizState.currentIndex];
+      if (!q) return;
+
+      quizState.answered = false;
+      quizState.currentAudioText = q.speakKr;
+
+      // Update Top Progress & Stage Badge
+      const stageNames = {
+        1: "PHẦN 1/3 • TỪ VỰNG",
+        2: "PHẦN 2/3 • ĐIỀN TỪ i+1",
+        3: "PHẦN 3/3 • CÂU GIAO TIẾP"
+      };
+      const instructions = {
+        1: "CHỌN NGHĨA TIẾNG VIỆT ĐÚNG",
+        2: "CHỌN TỪ TIẾNG HÀN ĐIỀN VÀO CHỖ TRỐNG",
+        3: "CHỌN NGHĨA TIẾNG VIỆT CỦA CÂU GIAO TIẾP"
+      };
+
+      document.getElementById('quizStageBadge').textContent = stageNames[quizState.stage];
+      document.getElementById('quizInstruction').textContent = instructions[quizState.stage];
+      document.getElementById('quizCounter').textContent = `${quizState.currentIndex + 1} / ${quizState.queue.length}`;
+
+      const stageBase = (quizState.stage - 1) * 33.33;
+      const stageProgress = ((quizState.currentIndex) / quizState.queue.length) * 33.33;
+      document.getElementById('quizProgressBar').style.width = `${Math.max(5, stageBase + stageProgress)}%`;
+
+      // Main Card Content
+      document.getElementById('quizMainKorean').textContent = q.mainKr;
+      const phonEl = document.getElementById('quizPhonetic');
+      if (q.phonetic) {
+        phonEl.textContent = q.phonetic;
+        phonEl.classList.remove('hidden');
+      } else {
+        phonEl.classList.add('hidden');
+      }
+
+      const hintEl = document.getElementById('quizSubHint');
+      if (q.hint) {
+        hintEl.textContent = `💡 ${q.hint}`;
+        hintEl.classList.remove('hidden');
+      } else {
+        hintEl.classList.add('hidden');
+      }
+
+      // Options Grid
+      const grid = document.getElementById('quizOptionsGrid');
+      grid.innerHTML = q.options.map((opt, idx) => `
+        <button onclick="selectQuizOption(${idx})" id="quiz-opt-${idx}" class="btn-3d-card p-3.5 rounded-2xl font-extrabold text-sm sm:text-base text-left flex items-center gap-3">
+          <span class="w-7 h-7 rounded-lg bg-[#131F24] border border-[#37464F] flex items-center justify-center text-xs font-black text-[#AFAFAF] shrink-0">${idx + 1}</span>
+          <span class="${q.speakOptionOnClick ? 'kr-font text-base sm:text-lg font-black' : ''} leading-snug">${opt}</span>
+        </button>
+      `).join('');
+
+      // Reset Feedback Bar
+      const fbBar = document.getElementById('quizFeedbackBar');
+      fbBar.className = "h-14 flex items-center justify-between px-4 rounded-2xl bg-[#202F36] border-2 border-[#37464F] shrink-0";
+      document.getElementById('quizFeedbackText').innerHTML = `<span class="text-[#AFAFAF]">Chọn 1 trong 4 đáp án</span>`;
+      document.getElementById('quizNextBtn').classList.add('hidden');
+
+      // Auto-speak Korean prompt
+      setTimeout(() => {
+        speakKorean(q.speakKr);
+      }, 120);
+    }
+
+    function replayCurrentPromptAudio() {
+      speakKorean(quizState.currentAudioText);
+    }
+
+    function selectQuizOption(idx) {
+      if (quizState.answered) return;
+      quizState.answered = true;
+
+      const q = quizState.queue[quizState.currentIndex];
+      const chosen = q.options[idx];
+      const isCorrect = chosen === q.correct;
+
+      // If option is Korean (Stage 2), speak the Korean option aloud; otherwise speak the Korean prompt again
+      if (q.speakOptionOnClick) {
+        speakKorean(chosen);
+      }
+
+      const chosenBtn = document.getElementById(`quiz-opt-${idx}`);
+      const fbBar = document.getElementById('quizFeedbackBar');
+      const fbText = document.getElementById('quizFeedbackText');
+      const nextBtn = document.getElementById('quizNextBtn');
+
+      if (isCorrect) {
+        playSFX('correct');
+        chosenBtn.classList.add('selected-correct');
+        fbBar.className = "h-14 flex items-center justify-between px-4 rounded-2xl bg-[#1F3822] border-2 border-[#58CC02] shrink-0";
+        fbText.innerHTML = `<span class="text-[#58CC02] font-black">✓ CHÍNH XÁC!</span>`;
+      } else {
+        playSFX('wrong');
+        chosenBtn.classList.add('selected-wrong');
+        // Highlight right answer
+        q.options.forEach((opt, i) => {
+          if (opt === q.correct) {
+            document.getElementById(`quiz-opt-${i}`).classList.add('selected-correct');
+          }
+        });
+        fbBar.className = "h-14 flex items-center justify-between px-4 rounded-2xl bg-[#3A1D22] border-2 border-[#FF4B4B] shrink-0";
+        fbText.innerHTML = `<span class="text-[#FF4B4B] font-black text-xs sm:text-sm">✕ Đáp án: ${q.correct}</span>`;
+
+        // Re-queue wrong item at the end of current stage until mastered
+        quizState.queue.push({
+          ...q,
+          options: shuffleArray(q.options)
+        });
+      }
+
+      nextBtn.classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      playSFX('click');
+      quizState.currentIndex++;
+
+      if (quizState.currentIndex < quizState.queue.length) {
+        renderQuizQuestion();
+      } else {
+        // Stage completed -> Advance to next stage or Victory
+        if (quizState.stage < 3) {
+          playSFX('fanfare');
+          loadStageQueue(quizState.stage + 1);
+          renderQuizQuestion();
+        } else {
+          completeLessonVictory();
+        }
+      }
+    }
+
+    function completeLessonVictory() {
+      playSFX('fanfare');
+      const key = getLessonKey(quizState.level, quizState.lessonNum);
+      appState.completedLessons[key] = true;
+
+      // Update Streak & Today Dot
+      const todayStr = new Date().toISOString().slice(0, 10);
+      if (appState.lastStudyDate !== todayStr) {
+        if (appState.lastStudyDate) appState.streak += 1;
+        appState.lastStudyDate = todayStr;
+      }
+      markTodayDot();
+
+      // Advance SRS Day if user just finished today's New Lesson
+      if (quizState.lessonNum === appState.srsDay && appState.srsDay < 35) {
+        appState.srsDay += 1;
+      }
+      saveState();
+
+      // Show Victory Screen
+      document.getElementById('view-quiz').classList.add('hidden');
+      document.getElementById('view-victory').classList.remove('hidden');
+      document.getElementById('victoryLessonTitle').textContent = `TOPIK ${quizState.level} • BÀI ${quizState.lessonNum}`;
+      document.getElementById('statVocabCount').textContent = quizState.counts.vocab;
+      document.getElementById('statFillCount').textContent = quizState.counts.fill;
+      document.getElementById('statSentCount').textContent = quizState.counts.sent;
+    }
+
+    function finishVictoryAndReturn() {
+      switchTab('dashboard');
+    }
+
+    function exitQuiz() {
+      playSFX('click');
+      window.speechSynthesis && window.speechSynthesis.cancel();
+      switchTab('dashboard');
+    }
+
+    /********************************************************************
+     * 8. INITIALIZATION ON WINDOW LOAD
+     ********************************************************************/
+    window.onload = function () {
+      loadState();
+      updateClock();
+      setInterval(updateClock, 1000);
+      renderDashboard();
+    };
+  </script>
+</body>
+</html>
+```
